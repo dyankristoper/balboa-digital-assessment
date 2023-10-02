@@ -8,14 +8,25 @@ const bcrypt = require('bcrypt');
 const authenticate = ( request, response ) => {
     sequelize.sync().then(() => {
 
+        const { username, password } = request.body;
+
+        console.log( username, password);
+
         User.findOne({
-            username: request.body.username
+            where: { username : username }
         })
         .then(async (res) => {
 
-            // This means that username exists
-            const comparison = await bcrypt.compare( res.password, request.body.password );
+            if(!res){
+                response.status(400).send({ status: "Invalid credentials" });
+            }
 
+            // This means that username exists
+            const comparison = await bcrypt.compare( password, res.password );
+
+            console.log( comparison );
+            console.log( res.password );
+            console.log( password );
             if( comparison ){
                 response
                 .status(200)
@@ -37,16 +48,14 @@ const authenticate = ( request, response ) => {
 const createUser = ( request, response ) => {
     sequelize.sync().then( async () => {
 
-        const { username, password } = request.body;
-
-        console.log( username );
-        console.log( password );
+        const { username, password, pseudonym } = request.body;
 
         // 10 as SALT rounds
         const hash = await bcrypt.hash( password, 10 );
 
         User.create({
-            username: username,
+            username,
+            pseudonym,
             password: hash
         }).then(res => {
             response
