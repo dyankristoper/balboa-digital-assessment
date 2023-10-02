@@ -5,7 +5,7 @@ const findAll = ( request, response ) => {
     sequelize.sync().then(() => {
 
         let { limit, offset } = request.query;
-        if( limit ){ limit = Number( limit ); }
+        if( limit ){ limit   = Number( limit ); }
         if( offset ){ offset = Number( offset ); }
 
         Book.findAll({
@@ -42,4 +42,24 @@ const unpublish = ( request, response ) => {
     });
 }
 
-module.exports = { findAll, unpublish };
+const publish = ( request, response ) => {
+    sequelize.sync().then( async () => {
+
+        const book = await Book.findOne({
+            id: request.params.id
+        });
+
+        book.published = true;
+        book.save()
+        .then( res => {
+            response.status(200).send({ status: "Book has been published." });
+        }).catch((error) => {
+            console.error('Failed to retrieve data : ', error);
+        });
+    
+    }).catch((error) => {
+        console.error('Unable to create table : ', error);
+    });
+}
+
+module.exports = { findAll, unpublish, publish };
