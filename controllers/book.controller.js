@@ -4,7 +4,13 @@ const Book = require('../models/book.model');
 const findAll = ( request, response ) => {
     sequelize.sync().then(() => {
 
-        Book.findAll()
+        let { limit, offset } = request.query;
+        if( limit ){ limit = Number( limit ); }
+        if( offset ){ offset = Number( offset ); }
+
+        Book.findAll({
+            offset: offset , limit: limit
+        })
         .then(res => {
             response.status(200).send( res );
         }).catch((error) => {
