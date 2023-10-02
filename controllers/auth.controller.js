@@ -10,8 +10,6 @@ const authenticate = ( request, response ) => {
 
         const { username, password } = request.body;
 
-        console.log( username, password);
-
         User.findOne({
             where: { username : username }
         })
@@ -24,9 +22,6 @@ const authenticate = ( request, response ) => {
             // This means that username exists
             const comparison = await bcrypt.compare( password, res.password );
 
-            console.log( comparison );
-            console.log( res.password );
-            console.log( password );
             if( comparison ){
                 response
                 .status(200)
