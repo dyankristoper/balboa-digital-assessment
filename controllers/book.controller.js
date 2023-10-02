@@ -16,4 +16,24 @@ const findAll = ( request, response ) => {
     });
 }
 
-module.exports = { findAll };
+const unpublish = ( request, response ) => {
+    sequelize.sync().then( async () => {
+
+        const book = await Book.findOne({
+            id: request.params.id
+        });
+
+        book.published = false;
+        book.save()
+        .then(res => {
+            response.status(200).send({ status: "Book has been unpublished." });
+        }).catch((error) => {
+            console.error('Failed to retrieve data : ', error);
+        });
+    
+    }).catch((error) => {
+        console.error('Unable to create table : ', error);
+    });
+}
+
+module.exports = { findAll, unpublish };
