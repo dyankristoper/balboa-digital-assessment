@@ -12,7 +12,7 @@ const findAll = ( request, response ) => {
             offset: offset , limit: limit
         })
         .then(res => {
-            response.status(200).send( res );
+            response.status(200).send({ books: res });
         }).catch((error) => {
             console.error('Failed to retrieve data : ', error);
         });
