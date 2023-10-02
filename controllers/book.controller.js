@@ -25,7 +25,7 @@ const unpublish = ( request, response ) => {
 
         book.published = false;
         book.save()
-        .then(res => {
+        .then( res => {
             response.status(200).send({ status: "Book has been unpublished." });
         }).catch((error) => {
             console.error('Failed to retrieve data : ', error);
