@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require('../config/server');
+const User = require('./user.model');
 
 const Book = sequelize.define("books", {
     title: {
@@ -18,10 +19,18 @@ const Book = sequelize.define("books", {
         type: DataTypes.DOUBLE,
         allowNull: false
     },
-    author: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+    published: {
+        type: DataTypes.BOOLEAN,
+        default: false
     }
-});
+}, { timestamps: false });
 
+Book.belongsTo( User, { foreignKey: 'author_id', foreignKeyConstraint: true } );
+
+sequelize.sync().then(() => {
+    console.log('Book table created successfully!');
+}).catch((error) => {
+    console.error('Unable to create table : ', error);
+});
+ 
 module.exports = Book;
